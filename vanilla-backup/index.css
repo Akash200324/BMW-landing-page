@@ -1,0 +1,807 @@
+/* ==========================================================================
+   BMW M Interactive Showcase - Core Design System & Styles
+   ========================================================================== */
+
+/* --- Design Variables --- */
+:root {
+    --color-bg-dark: #050505;
+    --color-bg-total-black: #000000;
+    --color-text-white: #ffffff;
+    --color-text-dimmed: rgba(255, 255, 255, 0.65);
+    
+    /* BMW M Stripes colors */
+    --bmw-blue: #0066b2;
+    --bmw-darkblue: #1c325c;
+    --bmw-red: #d12229;
+    
+    /* Slide Specific Colors */
+    --color-onyx-accent: #00f3ff;
+    --color-sunset-accent: #ff5e00;
+    --color-sunset-glow: rgba(255, 94, 0, 0.35);
+    --color-sunset-bg-gradient: radial-gradient(circle at 70% 50%, #1c0e05 0%, #030201 70%, #000000 100%);
+    
+    /* Typography */
+    --font-heading: 'Outfit', sans-serif;
+    --font-serif: 'Cinzel', serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    
+    /* UI Dimensions & Speeds */
+    --header-height: 80px;
+    --transition-premium: all 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* --- Global Reset & Scroll Defaults --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-white);
+    font-family: var(--font-body);
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* --- Ambient Grid Lines --- */
+.ambient-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.05;
+}
+
+.grid-line {
+    border-right: 1px solid var(--color-text-white);
+    height: 100%;
+}
+
+.grid-line:last-child {
+    border-right: none;
+}
+
+/* --- Luxury Preloader Overlay --- */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-total-black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s;
+}
+
+.preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.preloader-content {
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Preloader M Power Logo Animation */
+.preloader-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.preloader-logo .m-letter {
+    font-family: var(--font-heading);
+    font-size: 72px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--color-text-white);
+    line-height: 1;
+    letter-spacing: -3px;
+    animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.m-stripes {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+    transform: skewX(-15deg);
+    margin-top: 15px;
+}
+
+.stripe {
+    width: 50px;
+    height: 9px;
+    border-radius: 1px;
+}
+
+.stripe-blue { background-color: var(--bmw-blue); }
+.stripe-violet { background-color: var(--bmw-darkblue); }
+.stripe-red { background-color: var(--bmw-red); }
+
+.preloader-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--color-text-dimmed);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--bmw-blue) 0%, var(--bmw-darkblue) 50%, var(--bmw-red) 100%);
+    box-shadow: 0 0 8px var(--bmw-red);
+    transition: width 0.15s ease-out;
+}
+
+.progress-text {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    color: var(--color-text-white);
+    letter-spacing: 0.1em;
+    font-weight: 300;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        text-shadow: 0 0 5px rgba(255,255,255,0.1);
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        transform: scale(1.03);
+    }
+}
+
+/* --- Background 3D Sequence Canvas (2.39:1 Cinematic Ratio) --- */
+.canvas-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    max-width: calc(100vh * 2.39);
+    height: 100vh;
+    max-height: calc(100vw / 2.39);
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 2;
+    background-color: var(--color-bg-total-black);
+    overflow: hidden;
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-sunset .canvas-container {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.98);
+}
+
+#sequence-canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    filter: brightness(0.95);
+}
+
+.canvas-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0.4) 0%, 
+        rgba(0, 0, 0, 0) 25%, 
+        rgba(0, 0, 0, 0) 75%, 
+        rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
+}
+
+/* --- Header Section (Top Navbar - Glassmorphic & Minimalist) --- */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    padding: 0 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 0, 0, 0.35);
+    transition: var(--transition-premium);
+}
+
+/* Custom Image Logo Styling */
+.header-logo {
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.header-logo-img {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    transition: var(--transition-fast);
+}
+
+.header-logo-img:hover {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+}
+
+/* Interactive Top Navigation Menu Links */
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    pointer-events: auto;
+}
+
+.desktop-nav .nav-link {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-dimmed);
+    transition: var(--transition-fast);
+    position: relative;
+    padding: 8px 0;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.desktop-nav .nav-link:hover {
+    color: var(--color-text-white);
+    transform: translateY(-2px);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.desktop-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--bmw-blue), var(--bmw-red));
+    transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.desktop-nav .nav-link:hover::before {
+    left: 0;
+}
+
+/* --- Main Slide Systems --- */
+.slider-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    z-index: 5;
+    pointer-events: none; /* Let clicks pass to sub elements */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto; /* Re-enable clicks for active slide content */
+}
+
+.slide-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--header-height) 8% 0 8%;
+}
+
+/* --- SLIDE 1: Cinematic Inner Layout --- */
+.cinematic-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: 0;
+    position: relative;
+    width: 100%;
+}
+
+.hero-content-left {
+    position: absolute;
+    left: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 600px;
+    z-index: 10;
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--color-text-white);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    opacity: 0; /* Animated by GSAP */
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, var(--bmw-blue), var(--color-text-white));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 30px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    opacity: 0; /* Animated by GSAP */
+}
+
+.scroll-cue {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+}
+
+.cue-label {
+    font-family: var(--font-heading);
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    font-weight: 700;
+    color: var(--color-text-dimmed);
+}
+
+.cue-arrow {
+    width: 1px;
+    height: 35px;
+    background-color: var(--color-text-dimmed);
+    position: relative;
+    overflow: hidden;
+}
+
+.cue-arrow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-text-white);
+    animation: scrollSlide 2s infinite ease-in-out;
+}
+
+@keyframes scrollSlide {
+    0% { transform: translateY(-100%); }
+    80%, 100% { transform: translateY(100%); }
+}
+
+
+
+/* --- SLIDE 2: Sunset Metallic (No BG, Stretched out Car, BMW Typography) --- */
+.theme-sunset {
+    background: #000000 !important; /* Pure black backdrop */
+}
+
+.sunset-container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.sunset-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.sunset-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 10;
+}
+
+.sunset-badge {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--color-sunset-accent);
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 15px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
+                opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+.slide.active .sunset-badge {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.sunset-badge::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-sunset-accent);
+    box-shadow: 0 0 10px var(--color-sunset-accent);
+}
+
+/* BMW Exact Typography Style (Bold, Sharp Sans, Geometric Caps) */
+.orange-title {
+    color: var(--color-text-white);
+    font-family: var(--font-heading);
+    font-size: 84px;
+    font-weight: 900;
+    line-height: 0.90;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, 
+                opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.slide.active .orange-title {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.orange-text {
+    max-width: 480px;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 35px;
+    color: var(--color-text-dimmed);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s, 
+                opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s;
+}
+
+.slide.active .orange-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Call To Action Buttons (Glowing Sunset Accent) */
+.sunset-cta-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s, 
+                opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
+}
+
+.slide.active .sunset-cta-group {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.btn-orange {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-text-white);
+    background-color: var(--color-sunset-accent);
+    padding: 16px 36px;
+    border-radius: 4px;
+    box-shadow: 0 6px 20px rgba(255, 94, 0, 0.35);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: inline-block;
+}
+
+.btn-orange:hover {
+    background-color: #ff7824;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 94, 0, 0.5);
+}
+
+/* Sunset Media & Stretched Car Layout */
+.sunset-media {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    overflow: visible;
+}
+
+.smoke-fx-container {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.orange-img {
+    width: 118%; /* Stretches and floats out cleanly */
+    height: auto;
+    object-fit: contain;
+    z-index: 2;
+    position: relative;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    transition: transform 0.2s ease-out;
+    transform: scale(0.92);
+    opacity: 0;
+}
+
+.slide.active .orange-img {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Background Particle Smoke Canvas layer */
+.smoke-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slide.active .smoke-canvas {
+    opacity: 0.8;
+}
+
+/* --- Sidebar Navigator --- */
+.side-navigator {
+    position: fixed;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    z-index: 1000;
+}
+
+.nav-dot {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 5px 0;
+    position: relative;
+}
+
+.dot-inner {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition-fast);
+}
+
+.nav-dot:hover .dot-inner {
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.2);
+}
+
+.nav-dot.active .dot-inner {
+    background-color: var(--color-text-white);
+    border-color: var(--color-text-white);
+    transform: scale(1.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+body.theme-sunset .nav-dot.active .dot-inner {
+    background-color: var(--color-sunset-accent);
+    border-color: var(--color-sunset-accent);
+    box-shadow: 0 0 12px var(--color-sunset-accent);
+}
+
+.dot-label {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--color-text-dimmed);
+    opacity: 0;
+    transform: translateX(10px);
+    transition: var(--transition-fast);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.nav-dot:hover .dot-label, .nav-dot.active .dot-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.nav-dot.active .dot-label {
+    color: var(--color-text-white);
+}
+
+/* --- RESPONSIVE MEDIA QUERIES (Sleek layout for all viewports) --- */
+@media (max-width: 1200px) {
+    .orange-title { font-size: 64px; }
+    .sunset-grid { gap: 30px; }
+}
+
+@media (max-width: 991px) {
+    .main-header { padding: 0 4%; }
+    .desktop-nav { 
+        display: flex; 
+        gap: 15px; 
+    }
+    .desktop-nav .nav-link {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+    }
+    
+    .slide-inner { padding: var(--header-height) 5% 0 5%; }
+    
+    .sunset-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .sunset-content {
+        align-items: center;
+        order: 2;
+    }
+    
+    .sunset-media {
+        order: 1;
+        margin-top: 15px;
+    }
+    
+    .smoke-fx-container {
+        height: 50vh;
+    }
+    
+    .orange-img {
+        width: 100%;
+    }
+    
+    .side-navigator {
+        display: none;
+    }
+
+    .hero-title { font-size: 48px; }
+    .hero-desc { font-size: 16px; }
+}
+
+@media (max-width: 576px) {
+    :root {
+        --header-height: 70px;
+    }
+    
+    .header-logo-img { height: 60px; }
+    
+    .orange-title { font-size: 42px; }
+    .orange-text { font-size: 13px; margin-bottom: 25px; }
+    
+    .btn-orange {
+        padding: 12px 24px;
+        font-size: 10px;
+    }
+
+    .hero-content-left {
+        left: 5%;
+        text-align: center;
+        right: 5%;
+    }
+    .hero-title { font-size: 36px; }
+    .hero-desc { font-size: 14px; }
+}

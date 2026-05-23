@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW 7 Series - Ultimate Showcase</title>
+    
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Advanced Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="index.css?v=3">
+</head>
+<body class="theme-cinematic">
+
+    <!-- Premium Preloader Overlay -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-content">
+            <!-- Modern Styled M Power Logo -->
+            <div class="preloader-logo">
+                <span class="m-letter">M</span>
+                <div class="m-stripes">
+                    <span class="stripe stripe-blue"></span>
+                    <span class="stripe stripe-violet"></span>
+                    <span class="stripe stripe-red"></span>
+                </div>
+            </div>
+            <h2 class="preloader-title">PREPARING EXPERIENCE</h2>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="progress-text" class="progress-text">0% Loaded</div>
+        </div>
+    </div>
+
+    <!-- Background 3D Sequence Canvas (Borderless Widescreen, flush under Navbar) -->
+    <div class="canvas-container">
+        <canvas id="sequence-canvas"></canvas>
+        <div class="canvas-gradient-overlay"></div>
+    </div>
+
+    <!-- Minimal Header Top Navbar -->
+    <header class="main-header" id="main-header">
+        <div class="header-logo">
+            <a href="#" class="bmw-roundel-link">
+                <img src="image/bmwlogo.png" alt="BMW Logo" class="header-logo-img">
+            </a>
+        </div>
+        
+        <!-- Interactive Top Navbar -->
+        <nav class="desktop-nav">
+            <a href="#features" class="nav-link" data-slide="1">Features</a>
+            <a href="#specs" class="nav-link" data-slide="1">Specs</a>
+            <a href="#design" class="nav-link">Design</a>
+            <a href="#innovation" class="nav-link">Innovation</a>
+        </nav>
+    </header>
+
+    <!-- Main Dynamic Screen Slider -->
+    <main class="slider-wrapper">
+
+        <!-- SLIDE 1: Interactive Cinematic (Canvas-backed, no overlay text) -->
+        <section id="slide-cinematic" class="slide active">
+            <div class="slide-inner cinematic-inner">
+                
+                <!-- Hero Content Left Middle -->
+                <div class="hero-content-left">
+                    <h1 class="hero-title">THE ALL-NEW<br><span class="text-gradient">BMW 7 SERIES</span></h1>
+                    <p class="hero-desc">Experience the ultimate driving machine with unmatched luxury, futuristic design, and thrilling performance.</p>
+                </div>
+
+                <!-- Minimal pointer/play cue at bottom -->
+                <div class="scroll-cue">
+                    <span class="cue-label">SCROLL TO DISCOVER</span>
+                    <span class="cue-arrow"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Sunset Metallic (Direct stretched car image showcase with dynamic smoke canvas) -->
+        <section id="slide-sunset" class="slide">
+            <div class="slide-inner sunset-inner">
+                <div class="sunset-container">
+                    <div class="sunset-grid">
+                        <!-- Left Content Area -->
+                        <div class="sunset-content">
+                            <div class="sunset-badge">SUNSET METALLIC</div>
+                            <h1 class="slide-title-large orange-title">
+                                2027 BMW<br>7 SERIES
+                            </h1>
+                            <p class="slide-text-small orange-text">
+                                The "Sunset Metallic" edition is designed to evoke a "burst of molten adrenaline". This edition pairs a sophisticated, two-tone paint finish with an aggressive, futuristic design language, creating a look that suggests both immense power and refined luxury. Set against a dramatic, moody backdrop of atmospheric smoke, the vehicle’s metallic curves radiate speed and precision, perfectly capturing the performance-oriented spirit of BMW’s high-performance M line.
+                            </p>
+                            <div class="sunset-cta-group">
+                                <a href="#" class="btn-orange">Experience Power</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Image Area (Borderless, fully covered & stretched orange.png with canvas smoke backdrop) -->
+                        <div class="sunset-media">
+                            <div class="smoke-fx-container">
+                                <!-- Particle Smoke Simulation Canvas -->
+                                <canvas id="smoke-canvas" class="smoke-canvas"></canvas>
+                                <img src="image/orange.png" alt="BMW 7 Series Sunset Metallic" class="orange-img" id="orange-tilt-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Side Navigation Dot Navigator -->
+    <div class="side-navigator" id="side-navigator">
+        <button class="nav-dot active" data-slide="0" aria-label="Cinematic Intro">
+            <span class="dot-inner"></span>
+            <span class="dot-label">01 // CINEMATIC</span>
+        </button>
+        <button class="nav-dot" data-slide="1" aria-label="Sunset Metallic">
+            <span class="dot-inner"></span>
+            <span class="dot-label">02 // SUNSET</span>
+        </button>
+    </div>
+
+    <!-- Ambient Grid Lines for Premium Cyber-Luxury feel -->
+    <div class="ambient-grid">
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+    </div>
+
+    <!-- Script File -->
+    <script src="app.js?v=3"></script>
+</body>
+</html>

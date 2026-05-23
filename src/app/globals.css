@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg-dark: #050505;
+  --color-bg-total-black: #000000;
+  --color-text-white: #ffffff;
+  --color-text-dimmed: rgba(255, 255, 255, 0.65);
+  
+  /* BMW M Stripes colors */
+  --bmw-blue: #0066b2;
+  --bmw-darkblue: #1c325c;
+  --bmw-red: #d12229;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-white);
+  overflow-x: hidden;
+}
+
+/* Widescreen Canvas Ratio Helper */
+.cinematic-container {
+  width: 100vw;
+  max-width: calc(100vh * 2.39);
+  height: 100vh;
+  max-height: calc(100vw / 2.39);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
