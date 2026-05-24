@@ -32,13 +32,35 @@ export default function CinematicPlayer({ onProgress, onComplete }) {
       if (onComplete) onComplete();
     };
 
+    const handleError = () => {
+      // If video fails to load on Vercel, don't freeze the site!
+      handleCanPlay();
+    };
+
     startProgress();
-    video.addEventListener("canplay", handleCanPlay);
+
+    // If the video is already cached and ready to play, fire immediately
+    if (video.readyState >= 3) {
+      handleCanPlay();
+    } else {
+      video.addEventListener("canplay", handleCanPlay);
+      video.addEventListener("canplaythrough", handleCanPlay);
+      video.addEventListener("error", handleError);
+    }
+
     video.addEventListener("ended", handleEnded);
+
+    // Failsafe: never let the preloader get stuck for more than 5 seconds
+    const failsafe = setTimeout(() => {
+      handleCanPlay();
+    }, 5000);
 
     return () => {
       clearInterval(progressInterval);
+      clearTimeout(failsafe);
       video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("canplaythrough", handleCanPlay);
+      video.removeEventListener("error", handleError);
       video.removeEventListener("ended", handleEnded);
     };
   }, []);
