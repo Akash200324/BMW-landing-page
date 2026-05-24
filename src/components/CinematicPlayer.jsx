@@ -69,7 +69,7 @@ export default function CinematicPlayer({ onProgress, onComplete }) {
     <div className="absolute inset-0 w-full h-full bg-black z-0 overflow-hidden">
       <video
         ref={videoRef}
-        src="/video/animation.mp4"
+        src="/video/animation2.mp4"
         autoPlay
         muted
         playsInline
