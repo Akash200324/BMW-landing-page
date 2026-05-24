@@ -17,7 +17,7 @@
 
 > **Note to Developer:** Record a 15-second screen recording of you scrolling down the "Core Features" section, convert it to a `.gif` (or just drag the `.mp4` into GitHub), and place it right here! It will blow people away.
 
-![Place your animated GIF or MP4 here](https://via.placeholder.com/800x400.png?text=Record+a+GIF+of+the+Floating+Coin+Scroll+and+put+it+here!)
+
 
 ---
 
@@ -79,4 +79,4 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or whichever port Next.js automatically selects, usually 3000 or 3001) with your browser to witness the ultimate driving machine.
+Open (https://bmw-landing-page-five.vercel.app/) (or whichever port Next.js automatically selects, usually 3000 or 3001) with your browser to witness the ultimate driving machine.
