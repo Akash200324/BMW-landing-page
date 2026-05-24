@@ -12,15 +12,19 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const [progress, setProgress] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
-  // ── Bug fix: only show preloader on FIRST load ──
-  const hasLoadedRef = useRef(false);
 
   const handleProgress = (p) => {
-    if (!hasLoadedRef.current) {
-      setProgress(p);
-      if (p >= 100) hasLoadedRef.current = true;
-    }
+    setProgress((prev) => Math.max(prev, p));
   };
+
+  // ── GUARANTEED preloader dismiss after 5 seconds ──
+  // This fires no matter what the video does on Vercel.
+  useEffect(() => {
+    const guaranteed = setTimeout(() => {
+      setProgress(100);
+    }, 5000);
+    return () => clearTimeout(guaranteed);
+  }, []);
 
   // Auto transition from Sunset back to Cinematic after 10s
   useEffect(() => {
