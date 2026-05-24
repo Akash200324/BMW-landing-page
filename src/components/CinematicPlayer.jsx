@@ -70,6 +70,7 @@ export default function CinematicPlayer({ onProgress, onComplete }) {
       <video
         ref={videoRef}
         src="/video/animation.mp4"
+        autoPlay
         muted
         playsInline
         preload="auto"
