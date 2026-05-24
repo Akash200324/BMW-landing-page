@@ -1,244 +1,428 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Zap, Gauge, Map, Wind, CircleDashed, Lightbulb, Monitor, Cpu, Volume2, Armchair, HeartHandshake, Battery, Timer, Plug, Activity, Scale, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 
-const getIconForLabel = (label) => {
-  switch (label) {
-    case "ENGINE": return Zap;
-    case "0-100 KM/H": return Gauge;
-    case "RANGE": return Map;
-    case "AERODYNAMICS": return Wind;
-    case "WHEELS": return CircleDashed;
-    case "LIGHTING": return Lightbulb;
-    case "SCREEN": return Monitor;
-    case "SYSTEM": return Cpu;
-    case "SOUND": return Volume2;
-    case "SEATING": return Armchair;
-    case "MATERIALS": return HeartHandshake;
-    case "MASSAGE": return Activity;
-    case "MAX CHARGE": return Zap;
-    case "10-80%": return Timer;
-    case "AC CHARGE": return Plug;
-    case "BATTERY": return Battery;
-    case "DRIVETRAIN": return Cpu;
-    case "WEIGHT": return Scale;
-    default: return Activity;
-  }
-};
-
-const bgImages = [
-  "/image/car (1).jpg",
-  "/image/car (2).jpg",
-  "/image/car (3).jpg",
-  "/image/car (1).webp",
-];
-
+/* ─────────────────────────── DATA ─────────────────────────── */
 const features = [
   {
-    id: "powertrain",
-    title: "POWERTRAIN",
-    description: "Experience the pinnacle of electric performance with dual motors delivering breathtaking acceleration and supreme handling.",
-    data: [
-      { label: "ENGINE", value: "536 HP" },
-      { label: "0-100 KM/H", value: "4.7 SEC" },
-      { label: "RANGE", value: "625 KM WLTP" },
-    ]
+    id: "01", label: "Performance",
+    titleLines: ["TWIN TURBO", "ENGINE"],
+    desc: "530 HP of pure engineering. BMW TwinPower Turbo delivers brutal thrust with surgical precision at every RPM.",
+    image: "/image/car (1).jpg",
   },
   {
-    id: "design",
-    title: "DESIGN",
-    description: "A bold statement of luxury. The monolithic surface design is punctuated by crystal headlights and an illuminated kidney grille.",
-    data: [
-      { label: "AERODYNAMICS", value: "0.24 CD" },
-      { label: "WHEELS", value: "21 INCH" },
-      { label: "LIGHTING", value: "CRYSTAL" },
-    ]
+    id: "02", label: "Design",
+    titleLines: ["LASER", "HEADLIGHTS"],
+    desc: "Laserlight technology illuminates up to 600m. Crystal lenses sculpted to define the next era of automotive lighting.",
+    image: "/image/car (2).jpg",
   },
   {
-    id: "tech",
-    title: "TECH",
-    description: "Immerse yourself in the future with BMW Panoramic Vision and a theatre screen that transforms the rear cabin into a private cinema.",
-    data: [
-      { label: "SCREEN", value: "31.3 INCH" },
-      { label: "SYSTEM", value: "iDRIVE 8.5" },
-      { label: "SOUND", value: "B&W 4D" },
-    ]
+    id: "03", label: "Dynamics",
+    titleLines: ["M SPORT", "SUSPENSION"],
+    desc: "Reads the road 100 times per second. Perfect sport-comfort balance delivered at every corner and straight.",
+    image: "/image/car (3).jpg",
   },
   {
-    id: "luxury",
-    title: "LUXURY",
-    description: "Unprecedented comfort with executive lounge seating, cashmere blend upholstery, and multi-contour massage seats.",
-    data: [
-      { label: "SEATING", value: "EXECUTIVE" },
-      { label: "MATERIALS", value: "CASHMERE" },
-      { label: "MASSAGE", value: "9 MODES" },
-    ]
+    id: "04", label: "Technology",
+    titleLines: ["PANORAMIC", "SCREEN"],
+    desc: "The 31.3-inch 8K theatre screen transforms the rear into a private cinema. Panoramic Vision overlays data in sight.",
+    image: "/image/bmw-2027-i7-60-xdrive-ev.avif",
   },
   {
-    id: "charging",
-    title: "CHARGING",
-    description: "Rapid charging capabilities ensure you're always ready. Charge from 10% to 80% in just under 34 minutes at a DC fast station.",
-    data: [
-      { label: "MAX CHARGE", value: "195 kW" },
-      { label: "10-80%", value: "34 MIN" },
-      { label: "AC CHARGE", value: "11 kW" },
-    ]
+    id: "05", label: "Luxury",
+    titleLines: ["EXECUTIVE", "LOUNGE"],
+    desc: "Zero-gravity seating with nine massage modes, cashmere upholstery, and 40 ambient colours. A first-class sanctuary.",
+    image: "/image/AA21DEt9.jpeg",
   },
   {
-    id: "i7-specs",
-    title: "I7 SPECS",
-    description: "The ultimate electric driving machine. Combining the heritage of the 7 Series with an uncompromising electric drivetrain.",
-    data: [
-      { label: "BATTERY", value: "105.7 kWh" },
-      { label: "DRIVETRAIN", value: "xDRIVE" },
-      { label: "WEIGHT", value: "2715 KG" },
-    ]
-  }
+    id: "06", label: "Control",
+    titleLines: ["xDRIVE", "ALL-WHEEL"],
+    desc: "Intelligent torque distribution with pinpoint precision. Supreme traction assured in every driving condition.",
+    image: "/image/2020-bmw-7-series-041.webp",
+  },
 ];
 
-export default function Configurator() {
-  const [bgIndex, setBgIndex] = useState(0);
-  const [activeFeature, setActiveFeature] = useState(features[0]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const specs = [
+  { value: "530",   unit: "HP",   label: "Engine Power"    },
+  { value: "4.7",   unit: "SEC",  label: "0 – 100 km/h"   },
+  { value: "625",   unit: "KM",   label: "WLTP Range"      },
+  { value: "105.7", unit: "kWh",  label: "Battery Pack"    },
+  { value: "195",   unit: "kW",   label: "Max Charge Rate" },
+  { value: "21",    unit: "INCH", label: "Alloy Wheels"    },
+];
 
-  // Background Slider Effect
+/* ─────────────────── COUNT-UP HOOK ─────────────────── */
+function useCountUp(target, isActive) {
+  const [display, setDisplay] = useState("0");
+  const hasDecimal = target.includes(".");
   useEffect(() => {
-    const timer = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % bgImages.length);
-    }, 5000); // Reduced to 5s to prevent feeling stuck
-    return () => clearInterval(timer);
+    if (!isActive) return;
+    const end = parseFloat(target);
+    const duration = 1800;
+    const start = Date.now();
+    const tick = () => {
+      const p = Math.min((Date.now() - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      setDisplay(hasDecimal ? (end * ease).toFixed(1) : String(Math.floor(end * ease)));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [isActive, target]);
+  return display;
+}
+
+/* ─────────────────── SPEC CARD ─────────────────── */
+function SpecCard({ spec, index }) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.4 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
+  const count = useCountUp(spec.value, inView);
 
   return (
-    <section id="configurator" className="relative w-full h-screen bg-black overflow-hidden font-sans">
-      {/* Dynamic Background Slider */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={bgIndex}
-          initial={{ opacity: 0, scale: 1.02 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-          className="absolute inset-0 z-0"
-        >
-          <img
-            src={bgImages[bgIndex]}
-            alt="BMW Background"
-            className="w-full h-full object-cover"
-          />
-          {/* Lighter Dark Overlay for contrast so image is clearer */}
-          <div className="absolute inset-0 bg-black/30" />
-        </motion.div>
-      </AnimatePresence>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative flex items-baseline gap-6 py-10 px-8 border-b border-white/[0.07] hover:bg-white/[0.025] transition-colors duration-500 cursor-default"
+      style={{ borderRight: index % 2 === 0 ? "1px solid rgba(255,255,255,0.07)" : "none" }}
+    >
+      <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-[#0066b2] via-[#1c325c] to-[#d12229] transition-all duration-500" />
 
-      {/* Main Content Area */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-end pb-20 md:pb-32 px-6 md:px-20">
-        <motion.div 
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="w-full max-w-xl rounded-2xl bg-black/40 backdrop-blur-sm border border-white/10 p-6 md:p-8 flex flex-col gap-6 shadow-2xl"
-        >
-          
-          {/* Dropdown Feature Selector */}
-          <div className="relative w-full">
-            <span className="text-white/50 text-[10px] tracking-widest uppercase block mb-2 font-bold">Select Feature</span>
-            <button 
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full flex items-center justify-between bg-white/5 border border-white/20 px-4 py-3 rounded-lg text-white font-outfit uppercase tracking-widest hover:bg-white/10 transition-colors"
-            >
-              {activeFeature.title}
-              <ChevronDown className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} size={20} />
-            </button>
+      {/* Reduced size for technical section numbers as requested */}
+      <span
+        className="font-outfit font-black text-white leading-none tabular-nums"
+        style={{ fontSize: "clamp(40px, 5.5vw, 76px)" }}
+      >
+        {count}
+      </span>
 
-            <AnimatePresence>
-              {isDropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 w-full mt-2 bg-black/90 border border-white/20 rounded-lg overflow-hidden z-20"
-                >
-                  {features.map((feature) => (
-                    <button
-                      key={feature.id}
-                      onClick={() => {
-                        setActiveFeature(feature);
-                        setIsDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 uppercase tracking-widest font-outfit text-sm transition-colors hover:bg-white/20 ${
-                        activeFeature.id === feature.id ? 'text-blue-400 bg-white/10' : 'text-white'
-                      }`}
-                    >
-                      {feature.title}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Dynamic Content */}
-          <div className="flex flex-col relative overflow-hidden min-h-[160px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeFeature.id}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={{
-                  hidden: { opacity: 0, y: 10 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-                  },
-                  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
-                }}
-                className="flex flex-col gap-4"
-              >
-                <motion.h2 
-                  variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                  className="text-3xl md:text-4xl font-bold text-white uppercase tracking-widest font-outfit"
-                >
-                  {activeFeature.title}
-                </motion.h2>
-
-                <motion.p 
-                  variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                  className="text-white/80 text-sm md:text-base leading-relaxed font-light"
-                >
-                  {activeFeature.description}
-                </motion.p>
-
-                {/* Performance Data Points Widgets */}
-                <motion.div 
-                  variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-                  className="flex flex-wrap gap-6 md:gap-10 mt-4"
-                >
-                  {activeFeature.data.map((item, idx) => {
-                    const Icon = getIconForLabel(item.label);
-                    return (
-                      <div key={idx} className="flex flex-col gap-1 group">
-                        <span className="text-[#0066b2] text-[10px] tracking-widest uppercase flex items-center gap-1.5 font-bold">
-                          <Icon size={12} className="group-hover:scale-110 transition-transform" />
-                          {item.label}
-                        </span>
-                        <span className="text-white text-xl md:text-2xl font-medium tracking-wider font-outfit group-hover:text-gray-300 transition-colors">
-                          {item.value}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </motion.div>
+      <div className="flex flex-col gap-1">
+        <span className="font-outfit font-bold text-white/45 text-xl leading-none">{spec.unit}</span>
+        <span className="font-outfit text-white/55 text-xs tracking-[0.3em] uppercase">{spec.label}</span>
       </div>
-    </section>
+    </motion.div>
+  );
+}
+
+/* ─────────────────── SPEC SECTION: Orbit 3D BMW Logo ─────────────────── */
+function BMWOrbitLogo() {
+  const particles = Array.from({ length: 12 }, (_, i) => ({
+    angle: (i / 12) * Math.PI * 2,
+    r: 190 + (i % 4) * 25,
+    delay: i * 0.35,
+    size: 2 + (i % 3),
+    dur: 3 + (i % 5) * 0.6,
+  }));
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      <div className="absolute w-[520px] h-[520px] rounded-full border border-[#0066b2]/6 bmw-pulse-ring" style={{ animationDuration: "5s" }} />
+      <div className="absolute w-[400px] h-[400px] rounded-full border border-[#0066b2]/10 bmw-pulse-ring" style={{ animationDuration: "4s", animationDelay: "1.5s" }} />
+      <div className="absolute w-[280px] h-[280px] rounded-full border border-[#0066b2]/7 bmw-pulse-ring" style={{ animationDuration: "4.5s", animationDelay: "0.8s" }} />
+
+      {/* INCREASED GLARE in technical section */}
+      <div
+        className="absolute w-[700px] h-[700px] rounded-full blur-[140px]"
+        style={{ background: "radial-gradient(circle, rgba(0,102,178,0.3) 0%, rgba(0,102,178,0.05) 40%, transparent 70%)" }}
+      />
+
+      {/* ORBIT spinning logo */}
+      <img
+        src="/image/bmwlogo.png"
+        alt="BMW"
+        className="w-[22rem] h-[22rem] object-contain bmw-orbit-spin"
+        style={{
+          opacity: 0.2,
+          filter: "drop-shadow(0 0 80px rgba(0,102,178,1)) drop-shadow(0 0 150px rgba(0,102,178,0.6))",
+        }}
+      />
+
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-[#0066b2]"
+          style={{
+            width: p.size, height: p.size,
+            left: `calc(50% + ${Math.cos(p.angle) * p.r}px)`,
+            top: `calc(50% + ${Math.sin(p.angle) * p.r}px)`,
+            animation: `bmwParticle ${p.dur}s ease-in-out ${p.delay}s infinite`,
+            opacity: 0.6,
+          }}
+        />
+      ))}
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 60% 70% at 50% 50%, transparent 15%, #000 80%)" }} />
+    </div>
+  );
+}
+
+/* ─────────────────── FEATURE ROW ─────────────────── */
+function FeatureRow({ feature, index }) {
+  const imageLeft = index % 2 === 0;
+
+  const textPanel = (
+    <div className="relative w-1/2 h-full bg-transparent flex flex-col justify-center px-12 xl:px-20 py-10 overflow-hidden">
+      
+      {/* Glare effect inside each core section box */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: false, amount: 0.5 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 60%)",
+        }}
+      />
+
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, x: -16 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.5 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 flex items-center gap-3 mb-8"
+      >
+        <span className="font-outfit text-[#0066b2] text-[13px] font-bold tracking-[0.4em] uppercase">{feature.id}</span>
+        <div className="w-8 h-px bg-[#0066b2]" />
+        <span className="font-outfit text-white/30 text-[12px] tracking-[0.4em] uppercase">{feature.label}</span>
+      </motion.div>
+
+      {/* Increased font size & modified font styling for title */}
+      <div className="relative z-10 mb-8">
+        {feature.titleLines.map((line, i) => (
+          <div key={i} style={{ overflow: "hidden" }}>
+            <motion.h2
+              initial={{ y: "108%" }}
+              whileInView={{ y: "0%" }}
+              viewport={{ once: false, amount: 0.5 }}
+              transition={{ duration: 0.9, delay: 0.06 + i * 0.13, ease: [0.22, 1, 0.36, 1] }}
+              className="font-outfit font-light text-white uppercase leading-[0.95] tracking-wide"
+              style={{ fontSize: "clamp(48px, 6vw, 92px)" }}
+            >
+              {line}
+            </motion.h2>
+          </div>
+        ))}
+      </div>
+
+      {/* Increased font size & modified styling for description */}
+      <motion.p
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.32 }}
+        className="relative z-10 font-inter text-white/60 text-lg leading-relaxed max-w-[400px] mb-8 font-light"
+      >
+        {feature.desc}
+      </motion.p>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, x: -12 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.5 }}
+        transition={{ duration: 0.7, delay: 0.46 }}
+        className="relative z-10 group/cta flex items-center gap-2 cursor-pointer w-fit"
+      >
+        <span className="font-outfit text-[12px] font-bold tracking-[0.35em] uppercase text-[#0066b2] group-hover/cta:text-white transition-colors duration-300">
+          More Detail
+        </span>
+        <span className="text-[#0066b2] group-hover/cta:text-white group-hover/cta:translate-x-1 transition-all duration-300 text-xl leading-none">+</span>
+      </motion.div>
+
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: false, amount: 0.5 }}
+        transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 flex gap-[3px] mt-10 origin-left"
+      >
+        <div className="h-[2px] w-12 rounded-full bg-[#0066b2]" />
+        <div className="h-[2px] w-12 rounded-full bg-[#1c325c]" />
+        <div className="h-[2px] w-12 rounded-full bg-[#d12229]" />
+      </motion.div>
+    </div>
+  );
+
+  const imagePanel = (
+    <div className="w-1/2 h-full overflow-hidden">
+      <motion.img
+        initial={{ scale: 1.1, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: false, amount: 0.3 }}
+        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        src={feature.image}
+        alt={feature.titleLines.join(" ")}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+
+  return (
+    <div
+      className="relative w-full flex border-b border-white/[0.04]"
+      style={{ height: "70vh", minHeight: 480 }}
+    >
+      {imageLeft ? (
+        <>{imagePanel}{textPanel}</>
+      ) : (
+        <>{textPanel}{imagePanel}</>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────── MAIN COMPONENT ─────────────────── */
+export default function Configurator() {
+  const containerRef = useRef(null);
+
+  // Scroll mapping for the floating coin
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"],
+  });
+
+  // Calculate precise center points for 6 rows
+  const rawX = useTransform(
+    scrollYProgress,
+    [0, 0.08, 0.25, 0.42, 0.58, 0.75, 0.92, 1],
+    ["25vw", "25vw", "-25vw", "25vw", "-25vw", "25vw", "-25vw", "-25vw"]
+  );
+
+  const rawScale = useTransform(
+    scrollYProgress,
+    [0, 0.08, 0.165, 0.25, 0.335, 0.42, 0.5, 0.58, 0.665, 0.75, 0.835, 0.92, 1],
+    [1, 1,    0.6,   1,    0.6,   1,    0.6, 1,    0.6,   1,    0.6,   1,    1]
+  );
+
+  // New robust vertical tracking: Maps progress to top %
+  const rawY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  // Apply spring for a smooth floating feeling
+  const smoothX = useSpring(rawX, { stiffness: 35, damping: 20, mass: 1 });
+  const smoothScale = useSpring(rawScale, { stiffness: 35, damping: 20, mass: 1 });
+  const smoothY = useSpring(rawY, { stiffness: 50, damping: 25, mass: 1 });
+
+  return (
+    <div id="configurator" className="bg-black relative">
+
+      {/* ══════════════════════════════════════
+          1. FEATURE ROWS with FLOAT COIN
+      ══════════════════════════════════════ */}
+      <section className="pt-20 pb-0">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20 px-8"
+        >
+          <span className="font-outfit text-white/25 text-[12px] tracking-[0.55em] uppercase block mb-4">BMW Excellence</span>
+          <h2 className="font-outfit font-black text-white text-4xl md:text-5xl tracking-[0.2em] uppercase">Core Features</h2>
+          <div className="flex justify-center gap-[3px] mt-6">
+            <div className="h-[2px] w-10 bg-[#0066b2] rounded-full" />
+            <div className="h-[2px] w-10 bg-[#1c325c] rounded-full" />
+            <div className="h-[2px] w-10 bg-[#d12229] rounded-full" />
+          </div>
+        </motion.div>
+
+        {/* CONTAINER FOR SCROLL TRACKING */}
+        <div ref={containerRef} className="relative w-full">
+
+          {/* ── SINGLE FLOATING COIN (Absolute tracking) ── */}
+          <motion.div
+            className="pointer-events-none"
+            style={{
+              position: "absolute",
+              top: smoothY,
+              left: "50%",
+              x: smoothX,
+              scale: smoothScale,
+              marginTop: "-250px", // Centers vertically based on 500px height
+              marginLeft: "-250px", // Centers horizontally
+              width: 500,
+              height: 500,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 5,
+            }}
+          >
+            {/* Massive background glare/bloom for the floating coin */}
+            <div
+              className="absolute w-[800px] h-[800px] rounded-full"
+              style={{
+                background: "radial-gradient(circle, rgba(0,102,178,0.3) 0%, rgba(0,102,178,0.1) 40%, transparent 70%)",
+                filter: "blur(70px)",
+              }}
+            />
+            
+            {/* The Spinning Coin */}
+            <img
+              src="/image/bmwlogo.png"
+              alt=""
+              className="bmw-coin-spin"
+              style={{
+                width: "70%",
+                height: "70%",
+                objectFit: "contain",
+                opacity: 0.45,
+                filter: "drop-shadow(0 0 80px rgba(0,102,178,1))",
+              }}
+            />
+          </motion.div>
+
+          {/* Rows */}
+          <div style={{ position: "relative", zIndex: 10 }}>
+            {features.map((feature, i) => (
+              <FeatureRow key={feature.id} feature={feature} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          2. SPEC SECTION
+      ══════════════════════════════════════ */}
+      <section className="relative w-full bg-black overflow-hidden pt-28 pb-36 border-t border-white/5 mt-10">
+        <BMWOrbitLogo />
+
+        <div className="relative z-10 px-8 md:px-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9 }}
+            className="text-center mb-24"
+          >
+            <span className="font-outfit text-white/25 text-[12px] tracking-[0.55em] uppercase block mb-5">Technical</span>
+            <h2 className="font-outfit font-black text-white text-3xl md:text-4xl tracking-[0.25em] uppercase">
+              BMW 7 SERIES — SPECIFICATION
+            </h2>
+            <div className="flex justify-center gap-[3px] mt-8">
+              <div className="h-[2px] w-12 bg-[#0066b2] rounded-full" />
+              <div className="h-[2px] w-12 bg-[#1c325c] rounded-full" />
+              <div className="h-[2px] w-12 bg-[#d12229] rounded-full" />
+            </div>
+          </motion.div>
+
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2">
+            {specs.map((spec, i) => (
+              <SpecCard key={i} spec={spec} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

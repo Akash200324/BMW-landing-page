@@ -11,7 +11,7 @@ export default function Navbar() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
-      className="fixed top-0 left-0 w-full h-24 px-12 z-50 bg-black/40 backdrop-blur-lg border-b border-white/10 flex items-center justify-between shadow-lg"
+      className="absolute top-0 left-0 w-full h-24 px-12 z-50 flex items-center justify-between"
     >
       {/* Left Links */}
       <nav className="hidden md:flex items-center gap-10 flex-1">
@@ -22,7 +22,7 @@ export default function Navbar() {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 + index * 0.1 }}
-            className="group relative font-outfit text-sm font-semibold tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300 py-2"
+            className="group relative font-outfit text-sm font-semibold tracking-widest uppercase text-white/80 hover:text-white transition-colors duration-300 py-2"
           >
             {link}
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#0066b2] to-[#d12229] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
@@ -52,7 +52,7 @@ export default function Navbar() {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.3 + index * 0.1 }}
-            className="group relative font-outfit text-sm font-semibold tracking-widest uppercase text-white/70 hover:text-white transition-colors duration-300 py-2"
+            className="group relative font-outfit text-sm font-semibold tracking-widest uppercase text-white/80 hover:text-white transition-colors duration-300 py-2"
           >
             {link}
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#0066b2] to-[#d12229] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />

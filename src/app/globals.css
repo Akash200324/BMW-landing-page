@@ -29,3 +29,48 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* ── 3D BMW Coin Spin (Apple-smooth) ── */
+@keyframes bmwCoinSpin {
+  0%   { transform: perspective(900px) rotateY(0deg)   translateY(0px)   scale(1);    }
+  20%  { transform: perspective(900px) rotateY(72deg)  translateY(-14px) scale(1.02); }
+  40%  { transform: perspective(900px) rotateY(144deg) translateY(-20px) scale(1.04); }
+  50%  { transform: perspective(900px) rotateY(180deg) translateY(-18px) scale(1.03); }
+  70%  { transform: perspective(900px) rotateY(252deg) translateY(10px)  scale(0.98); }
+  85%  { transform: perspective(900px) rotateY(306deg) translateY(16px)  scale(0.97); }
+  100% { transform: perspective(900px) rotateY(360deg) translateY(0px)   scale(1);    }
+}
+
+@keyframes bmwParticle {
+  0%, 100% { transform: translateY(0px)  scale(1);    opacity: 0.55; }
+  40%       { transform: translateY(-18px) scale(1.2);  opacity: 0.2;  }
+  60%       { transform: translateY(-24px) scale(1.35); opacity: 0;    }
+}
+
+@keyframes bmwPulseRing {
+  0%   { transform: scale(0.92); opacity: 0.45; }
+  100% { transform: scale(1.65); opacity: 0;    }
+}
+
+.bmw-coin-spin {
+  animation: bmwCoinSpin 9s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  will-change: transform;
+}
+
+.bmw-pulse-ring {
+  animation: bmwPulseRing 3s ease-out infinite;
+}
+
+/* ── Spec section: Dramatic flipping coin ── */
+@keyframes bmwOrbit {
+  0%   { transform: perspective(900px) rotateY(0deg)   rotateX(0deg)   scale(1);    }
+  25%  { transform: perspective(900px) rotateY(180deg) rotateX(45deg)  scale(1.15); }
+  50%  { transform: perspective(900px) rotateY(360deg) rotateX(0deg)   scale(1);    }
+  75%  { transform: perspective(900px) rotateY(540deg) rotateX(-45deg) scale(1.15); }
+  100% { transform: perspective(900px) rotateY(720deg) rotateX(0deg)   scale(1);    }
+}
+
+.bmw-orbit-spin {
+  animation: bmwOrbit 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
