@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <div className="relative z-10 w-full h-screen flex items-center px-8 md:px-16 pointer-events-none">
-      <div className="max-w-2xl mt-20 pointer-events-auto">
+    <div className="relative z-10 w-full h-screen flex items-center px-6 md:px-16 pointer-events-none">
+      <div className="max-w-2xl mt-24 md:mt-20 pointer-events-auto">
         <motion.h1
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}

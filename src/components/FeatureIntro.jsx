@@ -25,7 +25,7 @@ export default function FeatureIntro() {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center gap-10">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center gap-10 px-6">
         {/* Heading */}
         <motion.h2
           initial={{ y: 50, opacity: 0 }}

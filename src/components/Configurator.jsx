@@ -170,44 +170,42 @@ function FeatureRow({ feature, index }) {
   const imageLeft = index % 2 === 0;
 
   const textPanel = (
-    <div className="relative w-1/2 h-full bg-transparent flex flex-col justify-center px-12 xl:px-20 py-10 overflow-hidden">
+    <div className="relative w-full md:w-1/2 h-auto md:h-full bg-transparent flex flex-col justify-center px-6 sm:px-10 xl:px-20 py-10 overflow-hidden">
       
-      {/* Glare effect inside each core section box */}
+      {/* Glare effect */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: false, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 60%)",
-        }}
+        style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 60%)" }}
       />
 
       {/* Badge */}
       <motion.div
         initial={{ opacity: 0, x: -16 }}
         whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 flex items-center gap-3 mb-8"
+        className="relative z-10 flex items-center gap-3 mb-5 md:mb-8"
       >
-        <span className="font-outfit text-[#0066b2] text-[13px] font-bold tracking-[0.4em] uppercase">{feature.id}</span>
+        <span className="font-outfit text-[#0066b2] text-[12px] font-bold tracking-[0.4em] uppercase">{feature.id}</span>
         <div className="w-8 h-px bg-[#0066b2]" />
-        <span className="font-outfit text-white/30 text-[12px] tracking-[0.4em] uppercase">{feature.label}</span>
+        <span className="font-outfit text-white/30 text-[11px] tracking-[0.4em] uppercase">{feature.label}</span>
       </motion.div>
 
-      {/* Increased font size & modified font styling for title */}
-      <div className="relative z-10 mb-8">
+      {/* Title */}
+      <div className="relative z-10 mb-5 md:mb-8">
         {feature.titleLines.map((line, i) => (
           <div key={i} style={{ overflow: "hidden" }}>
             <motion.h2
               initial={{ y: "108%" }}
               whileInView={{ y: "0%" }}
-              viewport={{ once: false, amount: 0.5 }}
+              viewport={{ once: false, amount: 0.3 }}
               transition={{ duration: 0.9, delay: 0.06 + i * 0.13, ease: [0.22, 1, 0.36, 1] }}
               className="font-outfit font-light text-white uppercase leading-[0.95] tracking-wide"
-              style={{ fontSize: "clamp(48px, 6vw, 92px)" }}
+              style={{ fontSize: "clamp(32px, 6vw, 92px)" }}
             >
               {line}
             </motion.h2>
@@ -215,13 +213,13 @@ function FeatureRow({ feature, index }) {
         ))}
       </div>
 
-      {/* Increased font size & modified styling for description */}
+      {/* Description */}
       <motion.p
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8, delay: 0.32 }}
-        className="relative z-10 font-inter text-white/60 text-lg leading-relaxed max-w-[400px] mb-8 font-light"
+        className="relative z-10 font-inter text-white/60 text-base md:text-lg leading-relaxed max-w-[400px] mb-6 md:mb-8 font-light"
       >
         {feature.desc}
       </motion.p>
@@ -230,7 +228,7 @@ function FeatureRow({ feature, index }) {
       <motion.div
         initial={{ opacity: 0, x: -12 }}
         whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.7, delay: 0.46 }}
         className="relative z-10 group/cta flex items-center gap-2 cursor-pointer w-fit"
       >
@@ -243,9 +241,9 @@ function FeatureRow({ feature, index }) {
       <motion.div
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
-        viewport={{ once: false, amount: 0.5 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 flex gap-[3px] mt-10 origin-left"
+        className="relative z-10 flex gap-[3px] mt-8 md:mt-10 origin-left"
       >
         <div className="h-[2px] w-12 rounded-full bg-[#0066b2]" />
         <div className="h-[2px] w-12 rounded-full bg-[#1c325c]" />
@@ -255,11 +253,11 @@ function FeatureRow({ feature, index }) {
   );
 
   const imagePanel = (
-    <div className="w-1/2 h-full overflow-hidden">
+    <div className="w-full md:w-1/2 h-56 sm:h-72 md:h-full overflow-hidden">
       <motion.img
         initial={{ scale: 1.1, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: false, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
         src={feature.image}
         alt={feature.titleLines.join(" ")}
@@ -269,15 +267,15 @@ function FeatureRow({ feature, index }) {
   );
 
   return (
-    <div
-      className="relative w-full flex border-b border-white/[0.04]"
-      style={{ height: "70vh", minHeight: 480 }}
-    >
-      {imageLeft ? (
-        <>{imagePanel}{textPanel}</>
-      ) : (
-        <>{textPanel}{imagePanel}</>
-      )}
+    <div className="relative w-full flex flex-col md:flex-row border-b border-white/[0.04]" style={{ minHeight: "clamp(480px, 70vh, 900px)" }}>
+      {/* On mobile: always image first, then text. On desktop: alternate */}
+      <div className="flex md:hidden flex-col w-full">
+        {imagePanel}
+        {textPanel}
+      </div>
+      <div className="hidden md:flex w-full h-full">
+        {imageLeft ? <>{imagePanel}{textPanel}</> : <>{textPanel}{imagePanel}</>}
+      </div>
     </div>
   );
 }
@@ -339,16 +337,17 @@ export default function Configurator() {
         {/* CONTAINER FOR SCROLL TRACKING */}
         <div ref={containerRef} className="relative w-full">
 
-          {/* ── SINGLE FLOATING COIN (Absolute tracking) ── */}
+          {/* ── SINGLE FLOATING COIN — hidden on mobile ── */}
           <motion.div
-            className="pointer-events-none"
+            className="hidden md:flex"
             style={{
               position: "absolute",
               top: smoothY,
               left: "50%",
               x: smoothX,
               scale: smoothScale,
-              marginTop: "-250px", // Centers vertically based on 500px height
+              pointerEvents: "none",
+              marginTop: "-250px",
               marginLeft: "-250px", // Centers horizontally
               width: 500,
               height: 500,
@@ -416,7 +415,7 @@ export default function Configurator() {
             </div>
           </motion.div>
 
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2">
             {specs.map((spec, i) => (
               <SpecCard key={i} spec={spec} index={i} />
             ))}
