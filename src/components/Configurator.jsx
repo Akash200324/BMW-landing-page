@@ -267,13 +267,17 @@ function FeatureRow({ feature, index }) {
   );
 
   return (
-    <div className="relative w-full flex flex-col md:flex-row border-b border-white/[0.04]" style={{ minHeight: "clamp(480px, 70vh, 900px)" }}>
-      {/* On mobile: always image first, then text. On desktop: alternate */}
-      <div className="flex md:hidden flex-col w-full">
+    <div className="relative w-full border-b border-white/[0.04]">
+      {/* On mobile: auto height, stack vertically */}
+      <div className="flex md:hidden flex-col w-full min-h-[480px]">
         {imagePanel}
         {textPanel}
       </div>
-      <div className="hidden md:flex w-full h-full">
+      {/* On desktop: strict 70vh height to guarantee perfect uniform image sizing and coin math alignment */}
+      <div 
+        className="hidden md:flex w-full"
+        style={{ height: "70vh", minHeight: 480 }}
+      >
         {imageLeft ? <>{imagePanel}{textPanel}</> : <>{textPanel}{imagePanel}</>}
       </div>
     </div>
